@@ -22,7 +22,7 @@ class Person {
     }
 
     getDetails() {
-        return `Name: ${this.name}, Age: ${this.age}`;
+        return `'Name: ${this.name}, Age: ${this.age}'`;
     }
 }
 
@@ -61,9 +61,22 @@ function getUniqueValues(arr1: string[] | number[], arr2: string[] | number[]) {
     type IndexType = string | number;
     let mergedArr: IndexType[] = arr1;
 
+    function customIncludes(array: IndexType[], value: IndexType) {
+        for (let idxValue of array) {
+            if(idxValue === value) {
+                return true;
+            }
+        } 
+        return false;
+    }
+
+    function customPush(array: IndexType[], value: IndexType) {
+        return [...array, value];
+    }
+
     for (let value of arr2) {
-        if(!mergedArr.includes(value)) {
-            mergedArr.push(value);
+        if(!customIncludes(mergedArr, value)) {
+            mergedArr = customPush(mergedArr, value)
         }
     }
 
@@ -86,11 +99,3 @@ function calculateTotalPrice(allProduct: ProductType[]) {
     })
     return totalPrice;
 }
-
-const products = [
-  { name: 'Pen', price: 10, quantity: 2 },
-  { name: 'Notebook', price: 25, quantity: 3, discount: 10 },
-  { name: 'Bag', price: 50, quantity: 1, discount: 20 },
-];
-
-console.log(calculateTotalPrice(products));
