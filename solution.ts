@@ -32,7 +32,12 @@ type BookType = {
 }
 
 function filterByRating(input: BookType[]) {
-    return input.filter(singleBook => singleBook.rating >= 4);
+    return input.filter(singleBook => {
+        if(singleBook.rating > 5) {
+            throw new Error("Rating Range Should be 0 to 5");
+        }
+        return singleBook.rating >= 4 && singleBook.rating <= 5; 
+    });
 }
 
 type UserType = {
@@ -59,7 +64,7 @@ function printBookDetails(myBook: Book) {
 
 function getUniqueValues(arr1: string[] | number[], arr2: string[] | number[]) {
     type IndexType = string | number;
-    let mergedArr: IndexType[] = arr1;
+    let mergedArr: IndexType[] = [];
 
     function customIncludes(array: IndexType[], value: IndexType) {
         for (let idxValue of array) {
@@ -71,7 +76,20 @@ function getUniqueValues(arr1: string[] | number[], arr2: string[] | number[]) {
     }
 
     function customPush(array: IndexType[], value: IndexType) {
-        return [...array, value];
+        const newArray: IndexType[] = new Array(array.length+1)
+        let idx: number = 0;
+        for (let singleValue of array) {
+            newArray[idx] = singleValue;
+            idx += 1
+        }
+        newArray[idx] = value
+        return newArray;
+    }
+
+    for (let value of arr1) {
+        if(!customIncludes(mergedArr, value)) {
+            mergedArr = customPush(mergedArr, value)
+        }
     }
 
     for (let value of arr2) {
@@ -94,6 +112,9 @@ function calculateTotalPrice(allProduct: ProductType[]) {
     allProduct.map(product => {
         totalPrice += product.price * product.quantity;
         if(product.discount) {
+            if(product.discount > 100) {
+                throw new Error("Discount range should be 1 to 100");
+            } 
             totalPrice -=  (product.price * product.quantity) * (product.discount * (1/100));
         }
     })
